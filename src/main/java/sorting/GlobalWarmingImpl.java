@@ -60,11 +60,20 @@ abstract class GlobalWarming {
 public class GlobalWarmingImpl extends GlobalWarming {
 
 
+    int size;
+    int[] arr;
+
     public GlobalWarmingImpl(int[][] altitude) {
         super(altitude);
-        // TODO
-        // expected pre-processing time in the constructror : O(n^2 log(n^2))
-
+        // objective linearize matrix to sort it using merge sort achieving linearithmic temporal complexity
+        arr = new int[altitude.length*altitude[0].length];
+        for (int i = 0; i < altitude.length; i++) {
+            for (int j = 0; j < altitude[i].length; j++) {
+                arr[i*altitude.length+j] = altitude[i][j];
+            }
+        }
+        Arrays.sort(arr);
+        size = arr.length;
     }
 
     /**
@@ -73,11 +82,57 @@ public class GlobalWarmingImpl extends GlobalWarming {
      * @param waterLevel the level of water
      */
     public int nbSafePoints(int waterLevel) {
-        // TODO
-        // expected time complexity O(log(n^2))
-         return -1;
+        int idx = binarySearch(waterLevel+1, 0, arr.length-1);
+        if (idx == -1) {
+            return 0;
+        }
+        return arr.length - idx;
+
     }
 
+    public int binarySearch(int threshold, int lo, int hi) {
+        if (lo > hi) {
+            return -1;
+        }
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] == threshold) {
+            int result = binarySearch(threshold, lo, mid-1);
+            if (result != -1) {
+                return result;
+            } else {
+                return mid;
+            }
+        } else {
+            return binarySearch(threshold, mid+1, hi);
+        }
+    }
 
+    public static int [][] getSimpleMatrix() {
+        int[][] matrix = new int[][]{
+                {1,1,1,1},
+                {1,1,1,1},
+                {1,1,1,1},
+                {1,1,1,1},
+        };
+/*        int[][] matrix = new int[][]{
+                {0, 0, 0, 0, 0, 1, 1, 1, 0, 0},
+                {0, 1, 0, 0, 0, 1, 0, 1, 1, 1},
+                {0, 0, 0, 0, 0, 1, 0, 0, 1, 0},
+                {0, 1, 0, 0, 0, 1, 0, 1, 1, 0},
+                {0, 1, 0, 0, 0, 1, 1, 1, 1, 1},
+                {0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 1, 1, 1, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        };*/
+        return matrix;
+    }
+
+    public static void main(String[] args) {
+        int [][] matrix = getSimpleMatrix();
+        GlobalWarming warming = new GlobalWarmingImpl(matrix);
+        System.out.println(warming.nbSafePoints(0));
+    }
 
 }

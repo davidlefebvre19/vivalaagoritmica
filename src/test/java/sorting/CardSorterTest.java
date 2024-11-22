@@ -14,7 +14,7 @@ public class CardSorterTest {
 
     @Test
     public void testExample() {
-        LinkedListImpl l = new LinkedListImpl(new int[]{7, 8, 2, 22, 102, 1});
+        LinkedListImpl l = new LinkedListImpl(new int[]{3,1,2,4});
         CardSorter.sort(l);
         assertTrue(l.isSorted());
     }

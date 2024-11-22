@@ -38,17 +38,16 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
     }
 
     public CircularLinkedList() {
-        // TODO initialize instance variables
+        n = 0;
+        last = null;
     }
 
     public boolean isEmpty() {
-        // TODO
-         return false;
+        return n == 0;
     }
 
     public int size() {
-        // TODO
-         return -1;
+        return n;
     }
 
     private long nOp() {
@@ -62,8 +61,20 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
      * @param item the item to append
      */
     public void enqueue(Item item) {
-        // TODO
-
+        Node node = new Node();
+        node.item = item;
+        if (last == null) {
+            last = node;
+            last.next = node;
+            nOp++;
+            n++;
+            return;
+        }
+        node.next = last.next;
+        last.next = node;
+        last = node;
+        nOp++;
+        n++;
     }
 
     /**
@@ -72,7 +83,18 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
      * Returns the element that was removed from the list.
      */
     public Item remove(int index) {
-         return null;
+         if(index < 0 || index >= n) {throw new IndexOutOfBoundsException();}
+         Node node = last;
+         int idx = size()-1;
+         while((idx+1)%size() != index) {
+            node = node.next;
+            idx = (idx+1)%size();
+         }
+         Item cargo = node.next.item;
+         node.next = node.next.next;
+         n--;
+         nOp++;
+         return cargo;
     }
 
 
@@ -95,19 +117,56 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
      */
     private class ListIterator implements Iterator<Item> {
 
-        // TODO You probably need a constructor here and some instance variables
+        long currnOp = nOp;
+        int idx = 0;
+        int size = size();
+        Node curr = null;
 
+        public ListIterator() {
+            if (!isEmpty()) {
+                curr = last.next;
+            }
+        }
 
         @Override
         public boolean hasNext() {
-             return false;
+             if (currnOp != nOp) {throw new ConcurrentModificationException();}
+             return idx < size && size != 0;
         }
 
         @Override
         public Item next() {
-             return null;
+             if (currnOp != nOp) {throw new ConcurrentModificationException();}
+             if (hasNext()) {
+                 Item cargo = curr.item;
+                 curr = curr.next;
+                 idx++;
+                 return cargo;
+             } else {
+                 throw new NoSuchElementException();
+             }
         }
 
+    }
+
+    public static void main(String[] args) {
+        CircularLinkedList<Integer> list = new CircularLinkedList<Integer>();
+        list.enqueue(1);
+        list.enqueue(2);
+        list.enqueue(3);
+        list.enqueue(4);
+
+/*        Iterator<Integer> it = list.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
+        }*/
+
+        list.remove(3);
+
+        Iterator<Integer> et = list.iterator();
+        while (et.hasNext()) {
+            System.out.println(et.next());
+        }
     }
 
 }

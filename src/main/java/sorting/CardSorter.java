@@ -31,7 +31,19 @@ public class CardSorter {
 
             // TODO
 
+            // BEGIN STRIP
+            for (int i = 0; i < list.getSize() - iter -1 ; i++) {
+                if (list.getFirst() > list.getSecond()) {
+                    list.swap();
+                };
+                list.pop();
+            }
+            for (int i = 0; i <= iter; i++) {
+                list.pop();
+            }
+            // END STRIP
         }
+
         // here, if you followed the invariant proposed above, the list should be sorted!
     }
 

@@ -1,4 +1,7 @@
 package sorting;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.Arrays;
 
 /**
  * The Olympic Games organizers need to allocate facilities for the athletes' training sessions.
@@ -44,13 +47,59 @@ public class TrainingSessions {
      *                 a session with start time and end time.
      * @return the minimum number of facilities required.
      */
+/*    public int minFacilitiesRequired(int[][] sessions) {
+        int start = sessions[0][0];
+        int end = 0;
+        for (int i = 0; i < sessions.length; i++) {
+            if (sessions[i][0] < start) {
+                start = sessions[i][0];
+            }
+            if (sessions[i][1] > end) {
+                end = sessions[i][1];
+            }
+        }
+        int[] slots = new int[end];
+        for (int i = 0; i < sessions.length; i++) {
+            int intstart = sessions[i][0];
+            int intend = sessions[i][1];
+            for (int j = intstart; j < intend; j++) {
+                slots[j]++;
+            }
+        }
+        Arrays.sort(slots);
+        return slots[slots.length - 1];
+    }*/
+
+
     public int minFacilitiesRequired(int[][] sessions) {
-        // TODO
-         return -1;
+
+        ArrayList<int[]> events = new ArrayList<>();
+        for (int[] session : sessions) {
+            events.add(new int[]{session[0], 1});
+            events.add(new int[]{session[1], -1});
+        }
+
+        events.sort(new Comparator<int[]>() {
+            public int compare(int[] o1, int[] o2) {
+                if (o1[0] == o2[0]) {
+                    return o1[1] - o2[1];
+                } else {
+                    return o1[0] - o2[0];
+                }
+            }
+        });
+
+        int curr = 0;
+        int maxf = 0;
+
+        for (int[] event : events) {
+            curr += event[1];
+            if (curr > maxf) {
+                maxf = curr;
+            }
+        }
+        return maxf;
     }
-
-
-
 
 
 }

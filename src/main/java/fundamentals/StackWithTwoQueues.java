@@ -1,5 +1,7 @@
 package fundamentals;
 
+import jdk.jfr.internal.tool.Main;
+
 import java.util.ArrayDeque;
 import java.util.EmptyStackException;
 import java.util.Queue;
@@ -25,7 +27,7 @@ public class StackWithTwoQueues<E> {
      * without removing it from the stack
      */
     public boolean empty() {
-         return false;
+         return queue2.isEmpty();
     }
 
     /**
@@ -34,7 +36,10 @@ public class StackWithTwoQueues<E> {
      * @throws EmptyStackException if the stack is empty
      */
     public E peek() throws EmptyStackException {
-         return null;
+         if (queue2.isEmpty()) {
+             throw new EmptyStackException();
+         }
+         return queue2.peek();
     }
 
     /**
@@ -43,7 +48,20 @@ public class StackWithTwoQueues<E> {
      * @throws EmptyStackException if the stack is empty
      */
     public E pop() throws EmptyStackException {
-         return null;
+        if (queue2.isEmpty()) {
+            throw new EmptyStackException();
+        }
+        if (queue1.isEmpty()) {
+            return queue2.remove();
+        }
+        E cargo = queue2.remove();
+        while (queue1.size() != 1) {
+            queue2.add(queue1.remove());
+        }
+        Queue<E> transfer = queue1;
+        queue1 = queue2;
+        queue2 = transfer;
+        return cargo;
     }
 
     /**
@@ -52,6 +70,31 @@ public class StackWithTwoQueues<E> {
      * @param item the item to add
      */
     public void push(E item) {
+        if (empty()) {
+            queue2.add(item);
+        } else {
+            queue1.add(queue2.remove());
+            queue2.add(item);
+        }
+    }
+
+    // Méthode statique de démonstration
+    public static void testStack() {
+        StackWithTwoQueues<Integer> stack = new StackWithTwoQueues<>();
+
+        stack.push(Integer.valueOf(1));
+        stack.push(Integer.valueOf(2));
+        stack.push(Integer.valueOf(3));
+
+        System.out.println("Element au sommet: " + stack.peek()); // Devrait afficher 3
+        System.out.println("Element retiré: " + stack.pop()); // Devrait afficher 3
+        System.out.println("Element au sommet après pop: " + stack.peek()); // Devrait afficher 2
+        System.out.println("La stack est-elle vide ? " + stack.empty()); // Devrait afficher false
+    }
+
+    public static void main(String[] args) {
+        StackWithTwoQueues.testStack();
     }
 
 }
+

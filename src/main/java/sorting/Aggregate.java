@@ -1,8 +1,6 @@
 package sorting;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Your task involves creating an `aggregate` function.
@@ -75,7 +73,23 @@ public class Aggregate {
      * There is a tie between 2 and 5, but 2 is smaller.
      */
     public static int mode(int[][] array, int from, int to, int column) {
-         return -1;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = from; i < to+1; i++) {
+            list.add(array[i][column]);
+        }
+        for (Integer i : list) {
+            map.put(i, map.getOrDefault(i, 0) + 1);
+        }
+        int e = list.get(0);
+        int v = map.get(e);
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (entry.getValue() >= v && entry.getKey() < e) {
+                e = entry.getKey();
+                v = entry.getValue();
+            }
+        }
+        return e;
     }
 
     /**

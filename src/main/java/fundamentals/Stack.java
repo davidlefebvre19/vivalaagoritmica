@@ -50,6 +50,7 @@ class LinkedStack<E> implements Stack<E> {
 
     private Node<E> top;        // the node on the top of the stack
     private int size;        // size of the stack
+    private Node<E> bottom;
 
     // helper linked list class
     private class Node<E> {
@@ -64,25 +65,47 @@ class LinkedStack<E> implements Stack<E> {
 
     @Override
     public boolean empty() {
-        // TODO Implement empty method
-         return false;
+        return size == 0;
     }
 
     @Override
     public E peek() throws EmptyStackException {
-        // TODO Implement peek method
-         return null;
+        if (empty()) {throw new EmptyStackException();}
+        return top.item;
     }
 
     @Override
     public E pop() throws EmptyStackException {
-        // TODO Implement pop method
-         return null;
+        if (empty()) {throw new EmptyStackException();}
+        if(size == 1) {
+            E cargo = top.item;
+            top = null;
+            bottom = null;
+            size = 0;
+            return cargo;
+        }
+        Node curr = bottom;
+        while (curr.next != top) {
+            curr = curr.next;
+        }
+        E cargo = top.item;
+        top = curr;
+        size--;
+        return cargo;
     }
 
     @Override
     public void push(E item) {
-        // TODO Implement push method
+        if (empty()) {
+            bottom = new Node<>(item, null);
+            top = bottom;
+        }
+        else {
+            Node n = new Node<>(item, null);
+            top.next = n;
+            top = n;
+        }
+        size++;
     }
 }
 
@@ -100,30 +123,56 @@ class ArrayStack<E> implements Stack<E> {
     private int size;        // size of the stack
 
     public ArrayStack() {
-        array = (E[]) new Object[10];
+        array = (E[]) new Object[2];
     }
 
     @Override
     public boolean empty() {
-        // TODO Implement empty method
-         return false;
+        return size == 0;
     }
 
     @Override
     public E peek() throws EmptyStackException {
-        // TODO Implement peek method
-         return null;
+        if (empty()) {throw new EmptyStackException();}
+        return array[size-1];
     }
 
     @Override
     public E pop() throws EmptyStackException {
-        // TODO Implement pop method
-         return null;
+        if (empty()) {throw new EmptyStackException();}
+        return array[--size];
     }
 
     @Override
     public void push(E item) {
-        // TODO Implement push method
+        if (size == array.length) {
+            E[] newArray = (E[]) new Object[array.length * 2];
+            System.arraycopy(array, 0, newArray, 0, array.length);
+            newArray[size] = item;
+            array = newArray;
+            size++;
+        } else {
+            array[size++] = item;
+        }
+    }
+
+    public static void main(String[] args) {
+/*        LinkedStack<Integer> ls = new LinkedStack<>();
+        ls.push(1);
+        ls.push(2);
+        System.out.println(ls.peek());
+        System.out.println(ls.pop());
+        System.out.println(ls.pop());*/
+        // System.out.println(ls.pop());
+
+        ArrayStack<Integer> as = new ArrayStack<>();
+        as.push(1);
+        as.push(2);
+        as.push(3);
+        as.push(4);
+        System.out.println(as.peek());
+        System.out.println(as.pop());
+        System.out.println(as.pop());
     }
 }
 

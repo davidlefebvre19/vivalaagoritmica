@@ -1,5 +1,6 @@
 package fundamentals;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -66,25 +67,45 @@ public interface SegmentedList<T> extends Iterable<T> {
 
 class SegmentedListImpl<T> implements SegmentedList<T> {
 
+    private ArrayList<List<T>> segmented;
+    private int size;
+
     // TODO: Implement the SegmentedList interface here
+    SegmentedListImpl() {
+        segmented = new ArrayList<>();
+        size = 0;
+    }
 
 
     // Add a new segment (list) to the SegmentedList.
     public void addSegment(List<T> segment) {
+        segmented.add(segment);
+        size += segment.size();
     }
 
     // Remove a segment by its index.
     public void removeSegment(int index) {
+        segmented.remove(index);
+        size -= segmented.get(index).size();
     }
 
     // Get the total size of the segmented list (across all segments).
     public int size() {
-         return -1;
+         return size;
     }
 
     // Retrieve an element at a global index (spanning all segments).
     public T get(int globalIndex) {
-         return null;
+        Iterator<T> it = iterator();
+        int idx = 0;
+        while (it.hasNext()) {
+            it.next();
+            idx++;
+            if (idx == globalIndex-1) {
+                return it.next();
+            }
+        }
+        throw new NoSuchElementException();
     }
 
 
@@ -92,8 +113,77 @@ class SegmentedListImpl<T> implements SegmentedList<T> {
     // Return an iterator for the segmented list.
     @Override
     public Iterator<T> iterator() {
-         return null;
+         return new SegmentedListIterator();
     }
 
+    private class SegmentedListIterator implements Iterator<T> {
+
+        private int total_size = 0;
+        private int segments_counter = 0;
+        private int segment_idx = 0;
+        private int curr_segment_size = 0;
+        private int curr_segment_idx = 0;
+
+        SegmentedListIterator() {
+            if (size != 0) {
+                total_size = size;
+                segments_counter = segmented.size();
+                curr_segment_size = segmented.get(0).size();
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (total_size != size) {
+                throw new ConcurrentModificationException();
+            }
+            if (curr_segment_idx >= curr_segment_size) {
+                int future_segment_idx = segment_idx + 1;
+                if (future_segment_idx >= segments_counter) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public T next() {
+            if (total_size != size) {
+                throw new ConcurrentModificationException();
+            }
+            if (hasNext()) {
+
+                if (curr_segment_idx >= curr_segment_size) {
+                    segment_idx++;
+                    curr_segment_idx = 0;
+                    T cargo = segmented.get(segment_idx).get(curr_segment_idx);
+                    curr_segment_idx++;
+                    return cargo;
+                } else {
+                    T cargo = segmented.get(segment_idx).get(curr_segment_idx);
+                    curr_segment_idx++;
+                    return cargo;
+                }
+            } throw new NoSuchElementException();
+        }
+    }
+    public static void test () {
+        SegmentedListImpl<Integer> sl = new SegmentedListImpl<>();
+        List<Integer> l1 = new ArrayList<>(Arrays.asList(1,2));
+        List<Integer> l2 = new ArrayList<>(Arrays.asList(3));
+        List<Integer> l3 = new ArrayList<>(Arrays.asList(5,6));
+        sl.addSegment(l1);
+        sl.addSegment(l2);
+        sl.addSegment(l3);
+        Iterator<Integer> it = sl.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
+        }
+    }
+
+    public static void main(String[] args) {
+        test();
+    }
 
 }
+

@@ -1,5 +1,5 @@
 package sorting;
-
+import java.util.ArrayList;
 
 /**
  * Author Pierre Schaus
@@ -55,9 +55,46 @@ public class Union {
      * @param intervals the intervals to unite.
      */
     public static Interval[] union(Interval[] intervals) {
-        // TODO
-         return new Interval[]{};
+        if (intervals.length == 0) return new Interval[0];
+        if (intervals.length == 1) return intervals;
+        ArrayList<Interval> inters = new ArrayList<>();
+        for (Interval i : intervals) {
+            inters.add(i);
+        }
 
+        inters.sort(Interval::compareTo);
+
+        // remove equals
+        ArrayList<Integer> eq = new ArrayList<>();
+        for (int i = 0; i < inters.size()-1; i++) {
+            if (inters.get(i).equals(inters.get(i + 1))) {
+                eq.add(i);
+            }
+        }
+        for (int i = 0; i < eq.size(); i++) {
+            inters.set(eq.get(i), new Interval(Integer.MIN_VALUE, Integer.MAX_VALUE));
+        }
+        ArrayList<Interval> ninters = new ArrayList<>();
+        for (Interval i : inters) {
+            if (i.min != Integer.MIN_VALUE && i.max != Integer.MAX_VALUE) {
+                ninters.add(i);
+            }
+        }
+
+        // union
+        ArrayList<Interval> res = new ArrayList<>();
+        for (int i = 0; i < ninters.size()-1; i++) {
+            if (ninters.get(i).max >= ninters.get(i+1).min || ninters.get(i).max == ninters.get(i+1).min) {
+                ninters.set(i+1, new Interval(ninters.get(i).min, Math.max(ninters.get(i+1).max, ninters.get(i).max)));
+                ninters.set(i, new Interval(Integer.MIN_VALUE, Integer.MAX_VALUE));
+            }
+        }
+        for (int i = 0; i < ninters.size(); i++) {
+            if (ninters.get(i).min != Integer.MIN_VALUE && ninters.get(i).max != Integer.MAX_VALUE) {
+                res.add(ninters.get(i));
+            }
+        }
+        return res.toArray(new Interval[res.size()]);
     }
 
 }

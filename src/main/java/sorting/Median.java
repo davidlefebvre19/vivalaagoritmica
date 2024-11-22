@@ -105,8 +105,56 @@ public class Median {
      * @param hi the highest index from which the median is computed
      */
     public static int median(Vector vec, int lo, int hi) {
-        // TODO
-         return -1;
+        int size = hi - lo + 1;
+        int[] a = new int[size];
+        for (int i = 0; i < size; i++) {
+            a[i] = vec.get(i);
+        }
+        sort(a);
+        int mid = lo + (hi - lo) / 2;
+        return a[mid];
+    }
+
+    private static int[] aux;
+
+    public static void merge(int[] a, int lo, int mid, int hi) {
+        int i = lo, j = mid + 1;
+
+        for (int k = lo; k <= hi; k++) {
+            aux[k] = a[k];
+        }
+
+        for (int k = lo; k <= hi; k++) {
+            if (i > mid) {
+                a[k] = aux[j++];
+            } else if (j > hi) {
+                a[k] = aux[i++];
+            } else if (aux[j] < aux[i]) {
+                a[k] = aux[j++];
+            }
+            else {
+                a[k] = aux[i++];
+            }
+        }
+    }
+
+    public static void sort(int[] vec) {
+        aux = new int[vec.length];
+        sort(vec, 0, vec.length - 1);
+    }
+
+    public static void sort(int[] vec, int lo, int hi) {
+        if (lo >= hi) {
+            return;
+        }
+        int mid = lo + (hi - lo) / 2;
+        sort(vec, lo, mid);
+        sort(vec, mid + 1, hi);
+        merge(vec, lo, mid, hi);
+    }
+
+    public static void main(String[] args) {
+
     }
 
 }

@@ -38,14 +38,22 @@ public class MergeSort {
 
     // Mergesort a[lo..hi] using auxiliary array aux[lo..hi]
     private static void sort(Comparable[] a, Comparable[] aux, int lo, int hi) {
-        // TODO
+        if (lo >= hi) {
+            return;
+        }
+        int mid = lo + (hi - lo) / 2;
+        sort(a, aux, lo, mid);
+        sort(a, aux, mid + 1, hi);
+        merge(a, aux, lo, mid, hi);
     }
 
     /**
      * Rearranges the array in ascending order, using the natural order
      */
     public static void sort(Comparable[] a) {
-        // TODO
+        int N = a.length;
+        Comparable[] aux = new Comparable[N];
+        sort(a, aux, 0, N - 1);
     }
 }
 
