@@ -3,6 +3,7 @@ sorting/Union.class
 strings/AutoCompleterGenerator$1.class
 sorting/BinaryHeap.class
 graphs/TaskScheduler.class
+sorting/FixQuickSort.class
 fundamentals/StackWithTwoQueues.class
 sorting/TrainingSessions.class
 searching/PreorderToBST$Node.class

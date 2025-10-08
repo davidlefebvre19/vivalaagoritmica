@@ -5,6 +5,7 @@ sorting/AggregateTest.class
 searching/BinarySearchTreeHigherTest.class
 searching/BinarySearchTreeIteratorTest.class
 fundamentals/FileSystemTest.class
+sorting/FixQuickSortTest.class
 searching/SleighRankingTest.class
 searching/BirthdayMapTest.class
 graphs/SmallestPriceTest.class
