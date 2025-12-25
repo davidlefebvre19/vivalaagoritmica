@@ -33,6 +33,27 @@ public class BinaryHeap {
         this.content = newContent;
     }
 
+    private boolean less(int i, int j) {
+        return content[i] < content[j];
+    }
+
+    private void exch(int i, int j) {
+        int tmp = content[i];
+        content[i] = content[j];
+        content[j] = tmp;
+    }
+
+    private void swim(int value) {
+        content[++size] = value;
+        int k = size;
+        while (k/2 >= 1) {
+            int j = k/2;
+            if (less(j,k)) break;
+            exch(k,j);
+            k = k/2;
+        }
+    }
+
     /**
      * Add a new value in this heap
      * The expected time complexity is O(log(n)) with n the size of the binary heap
@@ -40,6 +61,8 @@ public class BinaryHeap {
      * @param value the added value
      */
     public void push(int value) {
+        if (size()+1 == content.length) increaseSize();
+        swim(value);
     }
 
     /**
@@ -61,5 +84,12 @@ public class BinaryHeap {
      */
     public int getRoot() {
         return this.content[1];
+    }
+
+    public static void main(String[] args) {
+        BinaryHeap bh = new BinaryHeap(5);
+        bh.push(5);
+        bh.push(4);
+        bh.push(6);
     }
 }

@@ -59,12 +59,49 @@ abstract class GlobalWarming {
 
 public class GlobalWarmingImpl extends GlobalWarming {
 
+    private int [] flattend_altitudes;
+
+    private boolean less(int i, int j){
+        return flattend_altitudes[i-1] < flattend_altitudes[j-1];
+    }
+
+    private void exch(int i, int j) {
+        int tmp = flattend_altitudes[i-1];
+        flattend_altitudes[i-1] = flattend_altitudes[j-1];
+        flattend_altitudes[j-1] = tmp;
+    }
+
+    private void sink(int k, int N) {
+        while (k*2 <= N) {
+            int j = k*2;
+            if (j < N && less(j, j+1)) j++;
+            if (less(k, j)) exch(k,j);
+            k = j;
+        }
+    }
+
+    private void heapsort() {
+        int N = flattend_altitudes.length;
+        for (int i = flattend_altitudes.length/2; i > 1 ; i--) {
+            sink(i, N);
+        }
+        while (N > 1) {
+            exch(1, N--);
+            sink(1, N);
+        }
+    }
 
     public GlobalWarmingImpl(int[][] altitude) {
         super(altitude);
-        // TODO
         // expected pre-processing time in the constructror : O(n^2 log(n^2))
-
+        int idx = 0;
+        flattend_altitudes = new int[altitude.length*altitude.length];
+        for (int i = 0; i < altitude.length; i++) {
+            for (int j = 0; j < altitude[i].length; j++) {
+                flattend_altitudes[idx++] = altitude[i][j];
+            }
+        }
+        heapsort();
     }
 
     /**
@@ -73,11 +110,21 @@ public class GlobalWarmingImpl extends GlobalWarming {
      * @param waterLevel the level of water
      */
     public int nbSafePoints(int waterLevel) {
-        // TODO
-        // expected time complexity O(log(n^2))
-         return -1;
+        int nbr =0;
+        for (int i = 0; i < flattend_altitudes.length; i++) {
+            if (flattend_altitudes[i] > waterLevel) nbr++;
+        }
+        return nbr;
     }
 
-
+    public static void main(String[] args) {
+        int[][] matrix_t = new int[][] {
+            {0, 0, 0},
+            {0, 1, 0},
+            {0, 0, 0}
+        };
+        GlobalWarming gw = new GlobalWarmingImpl(matrix_t);
+        System.out.println(gw.nbSafePoints(0));
+    }
 
 }
